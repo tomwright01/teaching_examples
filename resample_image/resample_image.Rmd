@@ -1,0 +1,68 @@
+---
+title: "Resample Matrix"
+author: "SWC"
+date: "02/02/2015"
+output: html_document
+---
+
+# Introduction
+Suppose I have a legacy data file that consists of 1's and 0's, like this:
+
+00000000
+
+00001100
+
+00011110
+
+00111110
+
+00010110
+
+00001000
+
+(except it's much larger - probably 80x80).  I want to convert it to a black-and-white image, using a 4x4 patch of white pixels for each 0 and an equivalent patch of black pixels for each 1.  How can we do that in R?
+
+# Code
+Load the functions needed for this:
+```{r}
+#load the source files
+source('readMatrix.R')
+source('resampleMatrix.R')
+source('plotMatrix.R')
+```
+
+Load the example data
+```{r}
+exampleFile<-'data/example.dat'
+dat <- readMatrix(exampleFile)
+```
+
+## Original data
+```{r, echo=FALSE}
+plotMatrix(dat)
+```
+The example data is `r nrow(dat)` rows by `r ncol(dat)`.
+The output will be 4 times larger in both dimensions
+
+
+```{r}
+newSize<-4
+newMat<-resampleMatrix(dat,newSize)
+```
+
+## New data
+```{r, echo=FALSE}
+plotMatrix(newMat)
+```
+
+# Exporting images
+It's easy to export out new matrix in a format suitable for insertion into another document
+
+```{r}
+require(png) #load the package for dealing with .png files
+
+writePNG(dat,
+         target='output/oldimage.png')
+writePNG(newMat,
+         target='output/newimage.png')
+```
